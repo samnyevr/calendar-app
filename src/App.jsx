@@ -1,9 +1,12 @@
 import { useState } from 'react'
+import DrawCalendar from './components/DrawCalendar.jsx';
 import './App.css'
 
 let nextId = 0;
 
 function App() {
+
+  // define the form action when submitted start and end time of the event
   async function formAction(formData) {
     setStartTimes([
       ...startTimes, 
@@ -16,13 +19,13 @@ function App() {
   }
 
   // Define a function that generates the initial array
-  const createInitialArray = () => {
+  function createInitialArray() {
     const day = 7;
     const time = 24;
     const data = [];
-    for (let i = 0; i < day; i++) {
+    for (let i = 0; i <= day; i++) {
         data[i] = []; // Initialize each row as an empty array
-        for (let j = 0; j < time; j++) {
+        for (let j = 0; j <= time; j++) {
             data[i][j] = i * time + j + 1; // Example: populate with sequential numbers
         }
     }
@@ -32,6 +35,7 @@ function App() {
   // Initialize the state with the result of the initializer function
   const [items, setItems] = useState(createInitialArray);
 
+  // Initialize the state of the start and end time
   const [startTimes, setStartTimes] = useState([])
   const [endTimes, setEndTimes] = useState([])
 
@@ -74,14 +78,7 @@ function App() {
     <div className="formVisual">
       <h2>Form Visual</h2>
         <div className="calendar">
-          {items.map((item, index) => {
-            return <div key={index} className="week">
-              {
-                item.map((innerItem, innerIndex) => {
-                  return <div key={innerIndex} className="hour"></div>
-              })}
-            </div>
-          })}
+          <DrawCalendar items={items}/>
         </div>
     </div>
     </>

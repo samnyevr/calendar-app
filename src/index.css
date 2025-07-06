@@ -32,19 +32,23 @@ form, .block, .formVisual {
 
 .calendar {
   display: flex;
-  height: 500px;
+  min-height: 500px;
   max-width: 100vw;
 }
 
 .week {
   width: 100px;
-  height: 360px;
+  height: 28.8em;
   display: flex;
   flex-direction: column;
 }
 
 .hour {
   max-width: 100px;
-  height: 30px;
+  height: 1.2em;
   border: 1px solid lightgrey;
+}
+
+.hour.word {
+  border: 0;
 }

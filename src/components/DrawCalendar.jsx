@@ -6,12 +6,12 @@ function DrawCalendar({items}) {
   return (<>
   {items.map((item, index) => {
     return <div key={index} className="week">
-      {index > 0 ? (<div>{dayOfWeek[index-1]}</div>) : (<div c></div>)}
+      {index > 0 ? (<div>{dayOfWeek[index-1]}</div>) : (<div></div>)}
       {item.map((innerItem, innerIndex) => {
           return index > 0 ? (
-            <div key={innerIndex} className="hour"></div>) : (
+            <div className="hour"></div>) : (
               innerIndex > 0 ? (
-              <div key={innerIndex} className="hour word">{`${innerIndex}:00`}</div>) : (<></>)
+              <div className="hour word">{`${innerIndex}:00`}</div>) : (<></>)
             )
       })}
     </div>

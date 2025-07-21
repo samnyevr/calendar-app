@@ -8,20 +8,20 @@ function App() {
 
   // define the form action when submitted start and end time of the event
   async function formAction(formData) {
-    setStartTimes([
-      ...startTimes, 
-      { id: nextId++, time: formData.get("starttime") }
-    ])
-    setEndTimes([
-      ...endTimes, 
-      { id: nextId++, time: formData.get("endtime") }
-    ])
 
     setTimes({
       ...times,
+      startDates: [
+        ...times.startDates,
+        { id: nextId++, date: formData.get("startdate"), day: new Date(formData.get("startdate")).getDay()}
+      ],
       startTimes: [
         ...times.startTimes,
         { id: nextId++, time: formData.get("starttime")}
+      ],
+      endDates: [
+        ...times.endDates,
+        { id: nextId++, date: formData.get("enddate"), day: new Date(formData.get("enddate")).getDay()}
       ],
       endTimes: [
         ...times.endTimes,
@@ -34,12 +34,16 @@ function App() {
     // Placing time data into localstorage for future retrieval
     if(!timeData) {
       localStorage.setItem("calendar-app", JSON.stringify([{
+        startdate: formData.get("startdate"),
         starttime: formData.get("starttime"),
+        enddate: formData.get("enddate"),
         endtime: formData.get("endtime")
       }]));
     } else {
       let obj = [...timeData, {
+        startdate: formData.get("startdate"),
         starttime: formData.get("starttime"),
+        enddate: formData.get("enddate"),
         endtime: formData.get("endtime")
       }]
       localStorage.setItem("calendar-app", JSON.stringify(obj))
@@ -49,15 +53,19 @@ function App() {
   function initializeTimeVariable() {
     const timeData = JSON.parse(localStorage.getItem("calendar-app"))
 
-    if(!timeData) return {startTimes,endTimes}
-
     let obj = {
+      startDates: [],
       startTimes: [],
+      endDates: [],
       endTimes: []
     }
 
+    if(!timeData) return obj
+
     for(let i = 0; i < timeData.length; i++) {
+      obj["startDates"].push({id: i, date: timeData[i].startdate, day: new Date(timeData[i].startdate).getDay()})
       obj["startTimes"].push({id: i, time: timeData[i].starttime})
+      obj["endDates"].push({id: i, date: timeData[i].enddate, day: new Date(timeData[i].enddate).getDay()})
       obj["endTimes"].push({id: i, time: timeData[i].endtime})
       nextId++
     }
@@ -82,10 +90,6 @@ function App() {
   // Initialize the state with the result of the initializer function
   const [items, setItems] = useState(createInitialArray);
 
-  // Initialize the state of the start and end time
-  const [startTimes, setStartTimes] = useState([])
-  const [endTimes, setEndTimes] = useState([])
-
   const [times, setTimes] = useState(initializeTimeVariable)
 
   return (
@@ -94,8 +98,16 @@ function App() {
       <h2>Form Submit</h2>
       <br></br>
       <label>
+        Date
+        <input type="date" name="startdate"></input>
+      </label>
+      <label>
         Start Time
         <input type="time" name="starttime" />
+      </label>
+      <label>
+        Date
+        <input type="date" name="enddate"></input>
       </label>
       <label>
         End Time
@@ -105,11 +117,27 @@ function App() {
     </form>
     <div className="block">
       <h2>Form Output</h2>
+      <div className="startDate">
+        <h3>Start Date</h3>
+        <ol>
+          {times.startDates.map(date => (
+            <li key={date.id}>{date.date}</li>
+          ))}
+        </ol>
+      </div>
       <div className="startTime">
         <h3>Start Time</h3>
         <ol>
           {times.startTimes.map(time => (
             <li key={time.id}>{time.time}</li>
+          ))}
+        </ol>
+      </div>
+      <div className="endDate">
+        <h3>End Date</h3>
+        <ol>
+          {times.endDates.map(date => (
+            <li key={date.id}>{date.date}</li>
           ))}
         </ol>
       </div>
@@ -121,6 +149,16 @@ function App() {
           ))}
         </ol>
       </div>
+      <button onClick={() => {
+        localStorage.removeItem("calendar-app")
+        let obj = {
+          startDates: [],
+          startTimes: [],
+          endDates: [],
+          endTimes: []
+        }
+        setTimes(obj)
+        }}>Delete Data</button>
     </div>
     <div className="formVisual">
       <h2>Form Visual</h2>

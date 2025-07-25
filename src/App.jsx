@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import DrawCalendar from './components/DrawCalendar.jsx';
 import './App.css'
+import * as Helpers from './functions/helpers.js'
 
 let nextId = 0;
 
@@ -8,7 +9,9 @@ function App() {
 
   // define the form action when submitted start and end time of the event
   async function formAction(formData) {
-
+    for (const pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
     setTimes({
       ...times,
       startDates: [
@@ -73,28 +76,11 @@ function App() {
     return obj
   }
 
-  // Define a function that generates the initial array
-  function createInitialArray() {
-    const day = 7;
-    const time = 24;
-    const data = [];
-    for (let i = 0; i <= day; i++) {
-        data[i] = []; // Initialize each row as an empty array
-        for (let j = 0; j <= time; j++) {
-            data[i][j] = i * time + j + 1; // Example: populate with sequential numbers
-        }
-    }
-    return data;
-  };
-
-  // Initialize the state with the result of the initializer function
-  const [items, setItems] = useState(createInitialArray);
-
   const [times, setTimes] = useState(initializeTimeVariable)
 
   return (
     <>
-    <form action={formAction}>
+    <form className="block" action={formAction}>
       <h2>Form Submit</h2>
       <br></br>
       <label>
@@ -149,6 +135,9 @@ function App() {
           ))}
         </ol>
       </div>
+    </div>
+    <div className="block">
+      <h2>Functionalities</h2>
       <button onClick={() => {
         localStorage.removeItem("calendar-app")
         let obj = {
@@ -159,11 +148,17 @@ function App() {
         }
         setTimes(obj)
         }}>Delete Data</button>
+      <button onClick={() => {
+        Helpers.download(localStorage.getItem("calendar-app"), "export.json", "text/plain")
+      }
+      }>
+        Download Data
+      </button>
     </div>
-    <div className="formVisual">
+    <div className="formVisual block">
       <h2>Form Visual</h2>
         <div className="calendar">
-          <DrawCalendar items={items}/>
+          <DrawCalendar />
         </div>
     </div>
     </>

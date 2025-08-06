@@ -29,6 +29,14 @@ function App() {
       endTimes: [
         ...times.endTimes,
         { id: nextId++, time: formData.get("endtime")}
+      ],
+      tasks: [
+        ...times.tasks,
+        { id: nextId++, task: formData.get("task")}
+      ],
+      categories: [
+        ...times.categories,
+        { id: nextId++, category: formData.get('category')}
       ]
     })
 
@@ -40,14 +48,18 @@ function App() {
         startdate: formData.get("startdate"),
         starttime: formData.get("starttime"),
         enddate: formData.get("enddate"),
-        endtime: formData.get("endtime")
+        endtime: formData.get("endtime"),
+        task: formData.get("task"),
+        category: formData.get("category")
       }]));
     } else {
       let obj = [...timeData, {
         startdate: formData.get("startdate"),
         starttime: formData.get("starttime"),
         enddate: formData.get("enddate"),
-        endtime: formData.get("endtime")
+        endtime: formData.get("endtime"),
+        task: formData.get("task"),
+        category: formData.get("category")
       }]
       localStorage.setItem("calendar-app", JSON.stringify(obj))
     }
@@ -60,7 +72,9 @@ function App() {
       startDates: [],
       startTimes: [],
       endDates: [],
-      endTimes: []
+      endTimes: [],
+      tasks: [],
+      categories: []
     }
 
     if(!timeData) return obj
@@ -70,13 +84,31 @@ function App() {
       obj["startTimes"].push({id: i, time: timeData[i].starttime})
       obj["endDates"].push({id: i, date: timeData[i].enddate, day: new Date(timeData[i].enddate).getDay()})
       obj["endTimes"].push({id: i, time: timeData[i].endtime})
+      obj["tasks"].push({id: i, task: timeData[i].task})
+      obj["categories"].push({id: i, category: timeData[i].category})
       nextId++
     }
 
     return obj
   }
 
+  function initializeTimeVariable2() {
+    const timeData = JSON.parse(localStorage.getItem("calendar-app"))
+    let obj = {
+      end: {
+        dateTime: []
+      },
+      start: {
+        dateTime: []
+      },
+      summary: []
+    }
+
+  }
+
   const [times, setTimes] = useState(initializeTimeVariable)
+
+  const [events, setEvents] = useState(initializeTimeVariable2)
 
   return (
     <>
@@ -98,6 +130,14 @@ function App() {
       <label>
         End Time
         <input type="time" name="endtime" />
+      </label>
+      <label>
+        Task
+        <input type="text" name="task" />
+      </label>
+      <label>
+        Cateogry
+        <input type="text" name="category" />
       </label>
       <button type="submit">Submit</button>
     </form>
